@@ -497,32 +497,60 @@ https://github.com/shefat-global/devops-b11-m8-observability
 
 ### 1. Terraform Deployment Success
 
+This screenshot shows that Terraform successfully provisioned the AWS infrastructure and created the EC2 server.
+
 ![Terraform Deployment Success](screenshots/01-terraform-apply-success.png)
 
-### 2. Successful CI/CD Pipeline Execution
+### 2. EC2 Server Created on AWS
 
-![Successful CI/CD Pipeline](screenshots/02-github-actions-success.png)
+This screenshot shows the EC2 instance created by Terraform and running successfully in the AWS console.
 
-### 3. Application Running on EC2
+![EC2 Server Created](screenshots/02-ec2-server-created.png)
 
-![Application Running](screenshots/03-application-running.png)
+### 3. Successful CI/CD Pipeline Execution
 
-### 4. Node Exporter Running
+This screenshot shows the GitHub Actions workflow completed successfully. The workflow tested the application and deployed it to the EC2 server using SSH.
+
+![Successful CI/CD Pipeline](screenshots/03-github-actions-success.png)
+
+### 4. Application Running on EC2
+
+This screenshot shows that the Express application was successfully deployed and running on the EC2 public IP.
+
+![Application Running on EC2](screenshots/04-github-actions-success.png)
+
+### 5. Node Exporter Running
+
+This screenshot shows that the Node Exporter service is active and running on the EC2 server.
 
 ![Node Exporter Running](screenshots/04-node-exporter-running.png)
 
-### 5. Prometheus Targets UP
+### 6. Prometheus Targets UP
+
+This screenshot shows that Prometheus is successfully scraping both Prometheus and Node Exporter targets.
 
 ![Prometheus Targets UP](screenshots/05-prometheus-targets-up.png)
 
-### 6. Grafana Dashboard
+### 7. Grafana Metrics Dashboard
 
-![Grafana Dashboard](screenshots/06-grafana-dashboard.png)
+This screenshot shows the Grafana dashboard displaying CPU, Memory, Disk, and Network metrics.
 
-### 7. Loki Log Visualization
+![Grafana Dashboard Metrics](screenshots/06-grafana-dashboard-metrics.png)
+
+### 8. Loki Log Visualization
+
+This screenshot shows application logs visualized in Grafana using Loki.
 
 ![Loki Log Visualization](screenshots/07-loki-log-visualization.png)
 
-### 8. Systemd Services Running
+### 9. Loki Running
 
-![Systemd Services Running](screenshots/08-systemd-services-running.png)
+This screenshot shows that the Loki systemd service is active and running.
+
+![Loki Running](screenshots/07-loki-running.png)
+
+### 10. Promtail Running
+
+This screenshot shows that the Promtail systemd service is active and collecting logs.
+
+![Promtail Running](screenshots/08-promtail-running.png)
