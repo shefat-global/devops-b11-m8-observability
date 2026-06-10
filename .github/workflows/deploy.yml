@@ -1,0 +1,84 @@
+name: Module 8 Manual CI/CD Deployment
+
+on:
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    name: Test and Deploy to EC2
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install app dependencies
+        working-directory: ./app
+        run: npm install
+
+      - name: Run app test
+        working-directory: ./app
+        run: npm test
+
+      - name: Deploy to EC2 using SSH
+        uses: appleboy/ssh-action@v1
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USER }}
+          key: ${{ secrets.EC2_SSH_KEY }}
+          script: |
+            set -e
+
+            echo "Starting deployment on EC2..."
+
+            sudo apt update -y
+            sudo apt install -y git nodejs npm
+
+            if [ ! -d /opt/module8-observability/.git ]; then
+              sudo rm -rf /opt/module8-observability
+              sudo git clone https://github.com/shefat-global/devops-b11-m8-observability.git /opt/module8-observability
+              sudo chown -R ubuntu:ubuntu /opt/module8-observability
+            fi
+
+            cd /opt/module8-observability
+            git fetch origin
+            git reset --hard origin/main
+
+            cd /opt/module8-observability/app
+            npm install
+
+            sudo touch /var/log/module8-app.log
+            sudo touch /var/log/module8-app-error.log
+            sudo chown ubuntu:ubuntu /var/log/module8-app.log
+            sudo chown ubuntu:ubuntu /var/log/module8-app-error.log
+
+            sudo tee /etc/systemd/system/module8-app.service > /dev/null <<'EOF'
+            [Unit]
+            Description=Module 8 Observability Express App
+            After=network.target
+
+            [Service]
+            User=ubuntu
+            WorkingDirectory=/opt/module8-observability/app
+            ExecStart=/usr/bin/node /opt/module8-observability/app/server.js
+            Restart=always
+            RestartSec=5
+            Environment=PORT=8080
+            StandardOutput=append:/var/log/module8-app.log
+            StandardError=append:/var/log/module8-app-error.log
+
+            [Install]
+            WantedBy=multi-user.target
+            EOF
+
+            sudo systemctl daemon-reload
+            sudo systemctl enable module8-app
+            sudo systemctl restart module8-app
+            sudo systemctl status module8-app --no-pager
+
+            echo "Deployment completed successfully."

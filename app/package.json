@@ -1,0 +1,13 @@
+{
+  "name": "module8-observability-app",
+  "version": "1.0.0",
+  "description": "Express application for Module 8 CI/CD and Loki log monitoring",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "test": "node -e \"console.log('Test passed successfully')\""
+  },
+  "dependencies": {
+    "express": "^4.18.3"
+  }
+}
